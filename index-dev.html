@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .terminaljs {
+            background: black;
+            color: white;
+            font-family: Courier, monospace;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <pre class="terminaljs" data-columns="80" data-rows="25"></pre>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/node_modules/terminal.js/dist/terminal.js"></script>
+    <script src="/node_modules/socket.io-stream/socket.io-stream.js"></script>
+    <script>
+    var container = document.getElementsByClassName('terminaljs')[0];
+    var terminal = new Terminal(container.dataset);
+    var socket = io.connect('http://localhost:8080');
+    stream = ss.createStream({decodeStrings: false, encoding: 'utf-8'});
+    ss(socket).emit('new', stream, container.dataset);
+    socket.on('stdout', function (data) {
+		stream.pipe(terminal).dom(container).pipe(stream);
+    });
+    </script>
+</body>
+
+</html>
